@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.ArticleMapper">
+    <resultMap id="ArticleMap" type="com.example.demo.entity.Article">
+        <result column="article_content" property="article_content" jdbcType="VARCHAR"/>
+        <result column="article_category" property="article_category" jdbcType="VARCHAR"/>
+        <result column="article_title" property="article_title" jdbcType="VARCHAR"/>
+
+    </resultMap>
+    <!--查询所有用户信息-->
+    <select id="get_article_info" resultMap="ArticleMap" resultType="com.example.demo.entity.Article">
+        select * from article
+    </select>
+
+    <select id="get_article_category" resultType="String">
+        select distinct article_category from article
+    </select>
+
+    <select id="get_article_title" resultType="String">
+        select article_title from article where article_category=#{0}
+    </select>
+
+
+
+    <select id="get_article_content" resultType="String" parameterType="String">
+        select article_content from article where article_category=#{category} and article_title=#{title}
+    </select>
+
+    <insert id="insert_content" parameterType="String">
+        insert into article value(#{encode_title}, #{encode_category}, #{encode_content})
+    </insert>
+
+    <update id="update_content" parameterType="String">
+        update article
+        set article_content=#{content},article_title=#{title},article_category=#{category}
+        where article_category=#{encode_old_category} and article_title=#{encode_old_title}
+    </update>
+
+    <delete id="delArticle" parameterType="String">
+        delete from article where article_category=#{category} and article_title=#{title}
+    </delete>
+
+    <select id="searchTitle" parameterType="String" resultType="String">
+        select article_title from article where article_title like concat('%',#{keyWords},'%')
+    </select>
+</mapper>
