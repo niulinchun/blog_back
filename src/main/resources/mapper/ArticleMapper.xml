@@ -5,22 +5,34 @@
         <result column="article_content" property="article_content" jdbcType="VARCHAR"/>
         <result column="article_category" property="article_category" jdbcType="VARCHAR"/>
         <result column="article_title" property="article_title" jdbcType="VARCHAR"/>
-
     </resultMap>
+
+    <resultMap id="CategoryTitleMap" type="java.util.Map">
+        <result column="article_category" property="article_category" jdbcType="VARCHAR"/>
+        <result column="article_title" property="article_title" jdbcType="VARCHAR"/>
+    </resultMap>
+
     <!--查询所有用户信息-->
     <select id="get_article_info" resultMap="ArticleMap" resultType="com.example.demo.entity.Article">
         select * from article
     </select>
 
     <select id="get_article_category" resultType="String">
-        select distinct article_category from article
+        select distinct article_category from article ORDER BY article_category
     </select>
 
     <select id="get_article_title" resultType="String">
         select article_title from article where article_category=#{0}
     </select>
 
+    <select id="get_all_title" resultType="String">
+        select article_title from article
+    </select>
 
+<!--    一开始查询所有的种类和标题-->
+    <select id="getAllCategoryAndTitle" resultMap="CategoryTitleMap">
+        select article_category, article_title from article ORDER BY article_category ASC, article_title ASC
+    </select>
 
     <select id="get_article_content" resultType="String" parameterType="String">
         select article_content from article where article_category=#{category} and article_title=#{title}

@@ -19,6 +19,7 @@
         <datasource-mapping>
           <factory-entry name="demo" />
           <factory-entry name="entityManagerFactory" />
+          <factory-entry name="myBlog" />
         </datasource-mapping>
         <naming-strategy-map />
       </configuration>
@@ -117,5 +118,6 @@
     <orderEntry type="library" name="Maven: org.glassfish:jakarta.el:3.0.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.tomcat.embed:tomcat-embed-websocket:9.0.41" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />
+    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.6" level="project" />
   </component>
 </module>

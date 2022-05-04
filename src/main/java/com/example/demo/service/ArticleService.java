@@ -2,14 +2,21 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Article;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public interface ArticleService {
-    public List<Article> get_article_info();
+    public ArrayList<Article> get_article_info();
 
-    public List<String> get_article_category();
+    public ArrayList<String> get_article_category();
 
-    public List<String> get_article_title(String category);
+    public ArrayList<String> get_article_title(String category);
+
+    public ArrayList<String> get_all_title();
+
+    public List<Map<String, Object>> getAllCategoryAndTitle();
 
     public String get_article_content(String category, String title);
 
@@ -19,5 +26,5 @@ public interface ArticleService {
 
     public int delArticle(String category, String title);
 
-    public List<String> searchTitle(String keyWords);
+    public ArrayList<String> searchTitle(String keyWords);
 }

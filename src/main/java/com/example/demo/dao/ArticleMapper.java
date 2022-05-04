@@ -5,16 +5,25 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 //@Repository
 @Mapper
 public interface ArticleMapper {
 
-    List<Article> get_article_info();
+    ArrayList<Article> get_article_info();
 
-    List<String> get_article_category();
+    ArrayList<String> get_article_category();
 
-    List<String> get_article_title(String category);
+    ArrayList<String> get_article_title(String category);
+
+    ArrayList<String> get_all_title();
+
+    public List<Map<String, Object>> getAllCategoryAndTitle();
 
     String get_article_content(@Param("category") String category, @Param("title") String title);
 
@@ -26,5 +35,5 @@ public interface ArticleMapper {
 
     public int delArticle(String category, String title);
 
-    public List<String> searchTitle(String keyWords);
+    public ArrayList<String> searchTitle(String keyWords);
 }

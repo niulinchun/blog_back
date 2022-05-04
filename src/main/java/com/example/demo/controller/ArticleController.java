@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class ArticleController {
 //        this.articleService = articleService;
 //    }
 
-//    @RequestMapping("/myBlog")
+//    @RequestMapping("/blog")
 //    public String page() {
 //        return "article";
 //    }
@@ -54,7 +55,7 @@ public class ArticleController {
     @RequestMapping("/queryArticleInfo")
     public String getArticleInfo(Model model) throws IOException {
 
-        List<Article> lists = articleService.get_article_info();
+        ArrayList<Article> lists = articleService.get_article_info();
         ArrayList<Article> decode_lists = new ArrayList<Article>();
         BASE64Decoder decoder = new BASE64Decoder();
         for (Article article : lists) {
@@ -67,32 +68,34 @@ public class ArticleController {
         model.addAttribute("article_info", decode_lists);
         return "index";
     }
+
     @ResponseBody
     @RequestMapping("/queryCategory")
     public ArrayList<String> getCategory(Model model) throws IOException {
-        List<String> lists = articleService.get_article_category();
-        ArrayList<String> decode_lists = new ArrayList<String>();
-        BASE64Decoder decoder = new BASE64Decoder();
-        for (String category: lists){
-            String tmp = new String(decoder.decodeBuffer(category), "UTF-8");
-            decode_lists.add(tmp);
-        }
-        model.addAttribute("category_info", decode_lists);
-        return decode_lists;
+        ArrayList<String> lists = articleService.get_article_category();
+//        ArrayList<String> decode_lists = new ArrayList<String>();
+//        BASE64Decoder decoder = new BASE64Decoder();
+//        for (String category: lists){
+//            String tmp = new String(decoder.decodeBuffer(category), "UTF-8");
+//            decode_lists.add(tmp);
+//        }
+//        model.addAttribute("category_info", decode_lists);
+//        return decode_lists;
+        return lists;
     }
 
     @ResponseBody
     @RequestMapping("/queryTitle")
     public ArrayList<String> getTitle(@Param("category") String category) throws IOException {
-        ArrayList<String> decode_lists = new ArrayList<>();
-        BASE64Decoder decoder = new BASE64Decoder();
+//        ArrayList<String> decode_lists = new ArrayList<>();
+//        BASE64Decoder decoder = new BASE64Decoder();
 //        String decode_cat = new String(decoder.decodeBuffer(category), "utf-8");
-        List<String> lists = articleService.get_article_title(category);
-        for (String title: lists){
-            String tmp = new String(decoder.decodeBuffer(title), "UTF-8");
-            decode_lists.add(tmp);
-        }
-        return decode_lists;
+        ArrayList<String> lists = articleService.get_article_title(category);
+//        for (String title: lists){
+//            String tmp = new String(decoder.decodeBuffer(title), "UTF-8");
+//            decode_lists.add(tmp);
+//        }
+        return lists;
     }
 
     @ResponseBody
@@ -105,7 +108,7 @@ public class ArticleController {
         BASE64Decoder decoder = new BASE64Decoder();
         String encodeKeyWords = new String(de.getBytes(StandardCharsets.UTF_8));
 
-        List<String> lists = articleService.searchTitle(encodeKeyWords);
+        ArrayList<String> lists = articleService.searchTitle(encodeKeyWords);
         for (String title: lists) {
             String tmp = new String(decoder.decodeBuffer(title), "utf-8");
             decode_lists.add(tmp);
@@ -118,18 +121,18 @@ public class ArticleController {
     public String getContent(@Param("category") String category,
                                         @Param("title") String title) throws IOException {
 //        ArrayList<String> decode_lists = new ArrayList<>();
-        String title_new = title.replace('-','+');
-        String category_new = category.replace('-','+');
+//        String title_new = title.replace('-','+');
+//        String category_new = category.replace('-','+');
         BASE64Decoder decoder = new BASE64Decoder();
 //        BASE64Encoder encoder = new BASE64Encoder();
 //        String encode_category = encoder.encode(category.getBytes(StandardCharsets.UTF_8));
-        String content = articleService.get_article_content(category_new, title_new);
-        if(content != null) {
-            byte[] mid = decoder.decodeBuffer(content);
-            String tmp = new String(mid, "UTF-8");
-            return tmp;
-        }
-        return null;
+        String content = articleService.get_article_content(category, title);
+//        if(content != null) {
+//            byte[] mid = decoder.decodeBuffer(content);
+//            String tmp = new String(mid, StandardCharsets.UTF_8);
+//            return tmp;
+//        }
+        return content;
 
     }
 
@@ -158,13 +161,14 @@ public class ArticleController {
         String content = new JSONObject(JsonObj).getString("content");
         String old_category = new JSONObject(JsonObj).getString("old_category");
         String old_title = new JSONObject(JsonObj).getString("old_title");
-        String encode_category = new BASE64Encoder().encode(category.getBytes(StandardCharsets.UTF_8));
-        String encode_title = new BASE64Encoder().encode(title.getBytes(StandardCharsets.UTF_8));
-        String encode_content = new BASE64Encoder().encode(content.getBytes(StandardCharsets.UTF_8));
-        String encode_old_title = new BASE64Encoder().encode(old_title.getBytes(StandardCharsets.UTF_8));
-        String encode_old_category = new BASE64Encoder().encode(old_category.getBytes(StandardCharsets.UTF_8));
+//        String encode_category = new BASE64Encoder().encode(category.getBytes(StandardCharsets.UTF_8));
+//        String encode_title = new BASE64Encoder().encode(title.getBytes(StandardCharsets.UTF_8));
+//        String encode_content = new BASE64Encoder().encode(content.getBytes(StandardCharsets.UTF_8));
+//        String encode_old_title = new BASE64Encoder().encode(old_title.getBytes(StandardCharsets.UTF_8));
+//        String encode_old_category = new BASE64Encoder().encode(old_category.getBytes(StandardCharsets.UTF_8));
 
-        return articleService.update_content(encode_content, encode_category, encode_title, encode_old_category, encode_old_title);
+//        return articleService.update_content(encode_content, encode_category, encode_title, encode_old_category, encode_old_title);
+        return articleService.update_content(content, category, title, old_category, old_title);
     }
 
     @ResponseBody
@@ -220,19 +224,32 @@ public class ArticleController {
 
     @ResponseBody
     @RequestMapping("getAllCategoryAndTitle")
-    public HashMap<String,String> getAllCategoryAndTitle() throws IOException {
-        List<String> lists = articleService.get_article_category();
-        BASE64Decoder decoder = new BASE64Decoder();
-        HashMap<String, String> map = new HashMap<>();
-        for (String category : lists) {
-            String tmp_category = new String(decoder.decodeBuffer(category), "UTF-8");
-            List<String> title_list = articleService.get_article_title(category);
-            for (String s : title_list) {
-                String tmp_title = new String(decoder.decodeBuffer(s), "UTF-8");
-                map.put(tmp_title, tmp_category);
-            }
-        }
-        return map;
+    public List<Map<String, Object>> getAllCategoryAndTitle() throws IOException {
+//        ArrayList<String> lists = articleService.get_article_category();
+//        BASE64Decoder decoder = new BASE64Decoder();
+
+//        HashMap<String, String> map = new HashMap<>();
+//        for (String category : lists) {
+////            String tmp_category = new String(decoder.decodeBuffer(category), "UTF-8");
+//            ArrayList<String> title_list = articleService.get_article_title(category);
+//            for (String s : title_list) {
+////                String tmp_title = new String(decoder.decodeBuffer(s), "UTF-8");
+//                map.put(s, category);
+//            }
+//        }
+//        return map;
+        List<Map<String, Object>> res = articleService.getAllCategoryAndTitle();
+//        if (res != null) {
+//            System.out.println(res.get(0));
+//            System.out.println(res.get(0).values());
+//            System.out.println(res.get(0).values().toArray()[0].toString());
+//
+//
+//
+//        }
+
+        return articleService.getAllCategoryAndTitle();
+
     }
 
     @ResponseBody
@@ -241,10 +258,11 @@ public class ArticleController {
         String category = new JSONObject(JsonObj).getString("category");
         String title = new JSONObject(JsonObj).getString("title");
         String content = new JSONObject(JsonObj).getString("content");
-        String encode_category = new BASE64Encoder().encode(category.getBytes(StandardCharsets.UTF_8));
-        String encode_title = new BASE64Encoder().encode(title.getBytes(StandardCharsets.UTF_8));
-        String encode_content = new BASE64Encoder().encode(content.getBytes(StandardCharsets.UTF_8));
-        return articleService.insert_content(encode_category, encode_title, encode_content);
+//        String encode_category = new BASE64Encoder().encode(category.getBytes(StandardCharsets.UTF_8));
+//        String encode_title = new BASE64Encoder().encode(title.getBytes(StandardCharsets.UTF_8));
+//        String encode_content = new BASE64Encoder().encode(content.getBytes(StandardCharsets.UTF_8));
+//        return articleService.insert_content(encode_category, encode_title, encode_content);
+        return articleService.insert_content(category, title, content);
     }
 
     @ResponseBody
@@ -254,10 +272,11 @@ public class ArticleController {
         String category = new JSONObject(JsonObj).getString("category");
         String title = new JSONObject(JsonObj).getString("title");
 
-        String encode_category = new BASE64Encoder().encode(category.getBytes(StandardCharsets.UTF_8));
-        String encode_title = new BASE64Encoder().encode(title.getBytes(StandardCharsets.UTF_8));
+//        String encode_category = new BASE64Encoder().encode(category.getBytes(StandardCharsets.UTF_8));
+//        String encode_title = new BASE64Encoder().encode(title.getBytes(StandardCharsets.UTF_8));
 
-        return articleService.delArticle(encode_category, encode_title);
+//        return articleService.delArticle(encode_category, encode_title);
+        return articleService.delArticle(category, title);
     }
 
     @ResponseBody

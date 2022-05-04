@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ArticleService_Impl implements ArticleService {
@@ -23,19 +25,30 @@ public class ArticleService_Impl implements ArticleService {
 //    }
 
     @Override
-    public List<Article> get_article_info() {
+    public ArrayList<Article> get_article_info() {
         return articleMapper.get_article_info();
     }
 
     @Override
-    public List<String> get_article_category() {
+    public ArrayList<String> get_article_category() {
         return articleMapper.get_article_category();
     }
 
     @Override
-    public List<String> get_article_title(String category) {
+    public ArrayList<String> get_article_title(String category) {
         return articleMapper.get_article_title(category);
     }
+
+    @Override
+    public ArrayList<String> get_all_title() {
+        return articleMapper.get_all_title();
+    }
+
+    @Override
+    public List<Map<String, Object>> getAllCategoryAndTitle() {
+        return articleMapper.getAllCategoryAndTitle();
+    }
+
     @Override
     public String get_article_content(String category, String title) {
         return articleMapper.get_article_content(category, title);
@@ -55,7 +68,7 @@ public class ArticleService_Impl implements ArticleService {
         return articleMapper.delArticle(category, title);
     }
     @Override
-    public List<String> searchTitle(String keyWords) {
+    public ArrayList<String> searchTitle(String keyWords) {
         return articleMapper.searchTitle(keyWords);
     }
 }
