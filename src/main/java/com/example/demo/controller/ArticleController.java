@@ -262,6 +262,7 @@ public class ArticleController {
 //        String encode_title = new BASE64Encoder().encode(title.getBytes(StandardCharsets.UTF_8));
 //        String encode_content = new BASE64Encoder().encode(content.getBytes(StandardCharsets.UTF_8));
 //        return articleService.insert_content(encode_category, encode_title, encode_content);
+        String res = articleService.get_article_content(category, title);
         return articleService.insert_content(category, title, content);
     }
 
@@ -284,7 +285,7 @@ public class ArticleController {
     public int userLogin(@RequestParam(value = "userData") String JsonObj) throws JSONException {
         String username = new JSONObject(JsonObj).getString("username");
         String password = new JSONObject(JsonObj).getString("password");
-        if(username.equals("admin") && password.equals("admin")) {
+        if(username.equals("admin") && password.equals("nlc88888")) {
             return 1;
         } else {
             return 0;
